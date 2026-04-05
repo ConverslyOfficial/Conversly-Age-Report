@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Conversly Communication Age Calculator — Discover your true communication maturity age.">
+<title>Conversly · Communication Age Calculator</title>
+<link rel="icon" type="image/png" href="https://image2url.com/r2/default/images/1774918418130-4e79b709-ee19-4d3c-bf03-1d3f1eafc6e6.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════ DESIGN TOKENS */
+:root {
+  --bg:        #020C05;
+  --bg2:       #030F07;
+  --bg3:       #04120A;
+  --surf:      rgba(5,20,11,0.82);
+  --surf2:     rgba(255,255,255,0.022);
+  --surf3:     rgba(255,255,255,0.011);
+  --border:    rgba(255,255,255,0.066);
+  --border2:   rgba(255,255,255,0.034);
+  --border3:   rgba(255,255,255,0.016);
+
+  --em:        #10B981;
+  --em-hi:     #34D399;
+  --em-bright: #6EE7B7;
+  --em-dim:    #064E3B;
+  --em-pale:   #A7F3D0;
+  --em-glow:   rgba(16,185,129,0.18);
+  --em-glow2:  rgba(52,211,153,0.08);
+  --sel-bg:    rgba(16,185,129,0.07);
+  --sel-b:     rgba(52,211,153,0.40);
+
+  --gold:      #F5C518;
+  --gold-hi:   #FDE047;
+  --gold-glow: rgba(245,197,24,0.15);
+  --gold-dim:  rgba(245,197,24,0.10);
+
+  --txt:       #EDFAEE;
+  --txt2:      rgba(178,225,192,0.68);
+  --txt3:      rgba(110,180,140,0.46);
+  --txt4:      rgba(70,138,98,0.30);
+
+  --amber:     #F59E0B;
+  --rose:      #F43F5E;
+
+  --or:        16px;
+  --cr:        24px;
+}
+
+/* ══════════════════════════════════ RESET */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{height:100%;background:var(--bg);scroll-behavior:smooth;}
+body{min-height:100%;background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+button{font-family:'DM Sans',sans-serif;}
+a{text-decoration:none;}
+
+/* ══════════════════════════════════ BACKGROUND */
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(115px);animation:orbf ease-in-out infinite;}
+.o1{width:960px;height:960px;background:radial-gradient(circle,rgba(5,78,49,0.52) 0%,transparent 60%);top:-340px;left:-260px;animation-duration:34s;}
+.o2{width:720px;height:720px;background:radial-gradient(circle,rgba(4,46,24,0.30) 0%,transparent 60%);bottom:-240px;right:-200px;animation-duration:42s;animation-delay:-16s;}
+.o3{width:520px;height:520px;background:radial-gradient(circle,rgba(16,185,129,0.13) 0%,transparent 60%);top:38%;right:12%;animation-duration:28s;animation-delay:-10s;}
+.o4{width:360px;height:360px;background:radial-gradient(circle,rgba(52,211,153,0.07) 0%,transparent 60%);top:18%;left:28%;animation-duration:46s;animation-delay:-24s;}
+.o5{width:280px;height:280px;background:radial-gradient(circle,rgba(245,197,24,0.05) 0%,transparent 60%);bottom:28%;left:6%;animation-duration:38s;animation-delay:-8s;}
+@keyframes orbf{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(34px,-28px) scale(1.06);}66%{transform:translate(-26px,32px) scale(0.95);}}
+
+.bg-grid{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:linear-gradient(rgba(16,185,129,0.015) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(16,185,129,0.015) 1px,transparent 1px);
+  background-size:80px 80px;}
+.bg-noise{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0.022;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");}
+
+/* ══════════════════════════════════ LAYOUT */
+.app{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ══════════════════════════════════ HEADER */
+.hdr{padding:22px 40px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:20;}
+.logo{display:flex;align-items:center;text-decoration:none;cursor:pointer;}
+.logo-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:var(--txt);letter-spacing:-0.01em;transition:opacity .18s;}
+.logo:hover .logo-name{opacity:.70;}
+.q-counter{font-size:11px;color:var(--txt3);letter-spacing:0.12em;font-weight:500;}
+
+/* ══════════════════════════════════ PROGRESS */
+.prog-wrap{padding:14px 40px 0;flex-shrink:0;position:relative;z-index:20;}
+.prog-track{height:2px;background:rgba(255,255,255,0.04);border-radius:99px;position:relative;overflow:visible;}
+.prog-fill{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1);position:relative;
+  background:linear-gradient(90deg,#064E3B 0%,#10B981 40%,#34D399 72%,#6EE7B7 100%);
+  box-shadow:0 0 12px rgba(52,211,153,0.55),0 0 28px rgba(16,185,129,0.20);}
+.prog-fill::after{content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);
+  width:7px;height:7px;background:#fff;border-radius:50%;
+  box-shadow:0 0 8px rgba(255,255,255,0.8),0 0 16px rgba(52,211,153,1);}
+.prog-fill::before{content:'';position:absolute;inset:0;border-radius:99px;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.32) 50%,transparent 100%);
+  background-size:200px 100%;animation:shimmer 3s linear infinite;}
+@keyframes shimmer{0%{background-position:-200px 0;}100%{background-position:600px 0;}}
+.prog-milestones{display:flex;justify-content:space-between;padding:0 1px;margin-top:7px;}
+.prog-ms{font-size:9.5px;color:var(--txt4);letter-spacing:0.08em;transition:color .4s;}
+.prog-ms.passed{color:var(--em-pale);}
+
+/* ══════════════════════════════════ SCREENS */
+.screens{flex:1;position:relative;z-index:10;padding:24px 16px 80px;display:flex;align-items:flex-start;justify-content:center;}
+.screens-spacer{display:block;width:100%;max-width:600px;visibility:hidden;pointer-events:none;}
+
+/* ══════════════════════════════════ CARDS */
+.card{width:100%;max-width:592px;
+  background:var(--surf);
+  backdrop-filter:blur(56px) saturate(1.4);-webkit-backdrop-filter:blur(56px) saturate(1.4);
+  border:1px solid var(--border);border-radius:var(--cr);padding:46px 46px 40px;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.028),inset 0 1px 0 rgba(255,255,255,0.055),
+    0 8px 32px rgba(0,0,0,0.42),0 32px 80px rgba(0,0,0,0.72),0 0 80px rgba(16,185,129,0.04);
+  position:absolute;top:24px;left:50%;transform:translateX(-50%);
+  transition:opacity .42s cubic-bezier(.4,0,.2,1),transform .42s cubic-bezier(.4,0,.2,1);overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(52,211,153,0.48) 25%,rgba(180,255,210,0.38) 50%,rgba(52,211,153,0.48) 75%,transparent 100%);
+  animation:topAcc 6s ease-in-out infinite;}
+@keyframes topAcc{0%,100%{opacity:0.7;}50%{opacity:1;}}
+.card.active{opacity:1;transform:translateX(-50%) scale(1);pointer-events:all;}
+.card.out-l{opacity:0;transform:translateX(calc(-50% - 56px)) scale(.964);pointer-events:none;}
+.card.out-r{opacity:0;transform:translateX(calc(-50% + 56px)) scale(.964);pointer-events:none;}
+.card.in-r{opacity:0;transform:translateX(calc(-50% + 56px)) scale(.964);pointer-events:none;}
+.card.in-l{opacity:0;transform:translateX(calc(-50% - 56px)) scale(.964);pointer-events:none;}
+
+.card-c{width:100%;max-width:608px;position:absolute;top:24px;left:50%;transform:translateX(-50%);
+  transition:opacity .46s cubic-bezier(.4,0,.2,1),transform .46s cubic-bezier(.4,0,.2,1);}
+.card-c.active{opacity:1;transform:translateX(-50%) translateY(0) scale(1);pointer-events:all;}
+.card-c.gone{opacity:0;transform:translateX(-50%) translateY(24px) scale(.97);pointer-events:none;}
+
+/* ══════════════════════════════════ SKELETON */
+.skel-overlay{position:absolute;inset:0;border-radius:inherit;background:var(--surf);padding:46px 46px 40px;
+  z-index:30;pointer-events:none;animation:skelFadeOut 0.48s cubic-bezier(.4,0,.2,1) 0.22s forwards;
+  backdrop-filter:blur(56px);-webkit-backdrop-filter:blur(56px);}
+@keyframes skelFadeOut{0%{opacity:1;}100%{opacity:0;visibility:hidden;}}
+.skel-line{border-radius:8px;
+  background:linear-gradient(90deg,rgba(255,255,255,0.038) 0%,rgba(255,255,255,0.075) 40%,rgba(255,255,255,0.038) 80%);
+  background-size:480px 100%;animation:skelShimmer 1.5s ease-in-out infinite;margin-bottom:10px;}
+@keyframes skelShimmer{0%{background-position:-480px 0;}100%{background-position:480px 0;}}
+.sk-tag{height:11px;width:118px;margin-bottom:18px;}
+.sk-h1{height:34px;width:88%;margin-bottom:8px;}
+.sk-h2{height:28px;width:66%;margin-bottom:18px;}
+.sk-sub1{height:13px;width:95%;margin-bottom:8px;}
+.sk-sub2{height:13px;width:74%;margin-bottom:24px;}
+.sk-opt{height:54px;border-radius:16px;margin-bottom:8px;}
+.sk-opt2{height:54px;border-radius:16px;margin-bottom:8px;opacity:.78;}
+.sk-opt3{height:54px;border-radius:16px;margin-bottom:8px;opacity:.56;}
+.sk-opt4{height:54px;border-radius:16px;opacity:.36;}
+.card-c .skel-overlay{padding:44px 44px 40px;}
+
+/* ══════════════════════════════════ Q ANATOMY */
+.q-tag{display:inline-flex;align-items:center;gap:7px;
+  font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--em-bright);margin-bottom:14px;}
+.q-dot{width:5px;height:5px;background:var(--em-bright);border-radius:50%;
+  box-shadow:0 0 8px var(--em-bright),0 0 14px rgba(52,211,153,0.5);animation:pulse 2.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(1.8);}}
+.q-text{font-family:'Playfair Display',serif;font-size:27px;font-weight:600;line-height:1.30;
+  color:var(--txt);margin-bottom:8px;letter-spacing:-.018em;}
+.q-sub{font-size:13.5px;color:var(--txt2);margin-bottom:26px;line-height:1.68;font-weight:300;}
+.q-note{display:inline-flex;align-items:center;gap:7px;
+  font-size:11px;color:var(--em-pale);background:rgba(16,185,129,.055);
+  border:1px solid rgba(16,185,129,.14);border-radius:99px;padding:5px 13px;margin-bottom:18px;}
+
+.milestone-badge{display:none;align-items:center;gap:6px;
+  background:linear-gradient(135deg,rgba(245,197,24,0.14),rgba(245,197,24,0.07));
+  border:1px solid rgba(245,197,24,0.30);border-radius:99px;
+  padding:5px 20px 5px 14px;margin-bottom:14px;
+  font-size:10.5px;font-weight:600;color:var(--gold);letter-spacing:.1em;}
+.milestone-badge.show{display:inline-flex;animation:badgePop .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes badgePop{0%{transform:scale(0.7);opacity:0;}100%{transform:scale(1);opacity:1;}}
+
+/* ══════════════════════════════════ OPTIONS */
+.opts{display:flex;flex-direction:column;gap:8px;}
+.opt{background:var(--surf2);border:1px solid var(--border3);border-radius:var(--or);
+  padding:14px 18px;cursor:pointer;transition:all .22s cubic-bezier(.4,0,.2,1);
+  display:flex;align-items:center;justify-content:space-between;
+  text-align:left;width:100%;color:var(--txt2);
+  font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:400;position:relative;overflow:hidden;}
+.opt-glow{position:absolute;inset:0;opacity:0;transition:opacity .22s;pointer-events:none;
+  background:linear-gradient(135deg,rgba(16,185,129,0.065) 0%,transparent 60%);}
+.opt-accent{position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(to bottom,transparent,var(--em-hi),transparent);opacity:0;transition:opacity .22s;}
+.opt:hover{background:rgba(255,255,255,0.040);border-color:rgba(16,185,129,.22);color:var(--txt);
+  transform:translateY(-1px);box-shadow:0 4px 18px rgba(0,0,0,.34),0 0 24px rgba(16,185,129,.055);}
+.opt:hover .opt-glow{opacity:1;}
+.opt:hover .opt-accent{opacity:.5;}
+.opt.sel{background:var(--sel-bg);border-color:var(--sel-b);color:var(--txt);
+  box-shadow:0 0 0 1px rgba(16,185,129,.14),0 6px 24px rgba(16,185,129,.10);}
+.opt.sel .opt-glow{opacity:1;}
+.opt.sel .opt-accent{opacity:1;}
+.opt-lbl{flex:1;line-height:1.48;}
+.opt-radio{width:19px;height:19px;border-radius:50%;border:1.5px solid rgba(255,255,255,.12);
+  flex-shrink:0;transition:all .22s;display:flex;align-items:center;justify-content:center;}
+.opt.sel .opt-radio{background:var(--em);border-color:var(--em-hi);
+  box-shadow:0 0 12px rgba(16,185,129,.58),0 0 24px rgba(16,185,129,.18);}
+.chk{width:8px;height:8px;opacity:0;transition:opacity .15s;}
+.opt.sel .chk{opacity:1;}
+
+/* ══════════════════════════════════ NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;
+  margin-top:26px;padding-top:18px;border-top:1px solid var(--border3);}
+.btn-back{background:transparent;border:none;color:var(--txt3);cursor:pointer;
+  font-size:13px;font-weight:400;display:flex;align-items:center;gap:5px;padding:8px 0;transition:color .18s;}
+.btn-back:hover{color:var(--txt2);}
+.btn-next{background:linear-gradient(135deg,#054F30 0%,#10B981 50%,#34D399 100%);
+  border:none;border-radius:99px;padding:13px 32px;color:#fff;
+  font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.02em;
+  transition:all .22s;display:flex;align-items:center;gap:7px;
+  box-shadow:0 4px 20px rgba(16,185,129,.34),inset 0 1px 0 rgba(255,255,255,.14);
+  opacity:.3;pointer-events:none;}
+.btn-next.on{opacity:1;pointer-events:all;}
+.btn-next.on:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(16,185,129,.52),inset 0 1px 0 rgba(255,255,255,.18);}
+
+/* ══════════════════════════════════ WELCOME */
+.wlc-eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--em-pale);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.wlc-rule{flex:1;height:1px;background:linear-gradient(90deg,rgba(167,243,208,.28),transparent);}
+.wlc-title{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;
+  line-height:1.14;color:var(--txt);margin-bottom:16px;letter-spacing:-.024em;}
+.wlc-title em{font-style:italic;
+  background:linear-gradient(135deg,#6EE7B7 0%,#34D399 50%,#A7F3D0 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.wlc-body{font-size:14.5px;line-height:1.74;color:var(--txt2);margin-bottom:22px;font-weight:300;}
+
+/* Age mystery box */
+.mystery-age{display:flex;align-items:center;justify-content:center;gap:0;
+  background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.14);
+  border-radius:20px;padding:20px 24px;margin-bottom:22px;position:relative;overflow:hidden;}
+.mystery-age::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(52,211,153,0.4),transparent);}
+.mystery-num{font-family:'Playfair Display',serif;font-size:72px;font-weight:900;
+  background:linear-gradient(135deg,rgba(110,231,183,0.24) 0%,rgba(52,211,153,0.14) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:blur(6px);letter-spacing:-.04em;line-height:1;user-select:none;}
+.mystery-label{position:absolute;bottom:14px;font-size:10px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--txt3);}
+.mystery-q{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;
+  color:var(--em-pale);opacity:0.55;margin-left:4px;line-height:1;}
+
+.testimonial{background:rgba(255,255,255,.020);border:1px solid var(--border2);
+  border-radius:18px;padding:18px 20px;margin-bottom:20px;position:relative;overflow:hidden;}
+.testimonial::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(52,211,153,0.28),transparent);}
+.test-stars{color:var(--gold);font-size:12px;letter-spacing:1px;margin-bottom:10px;}
+.test-quote{font-size:13.5px;line-height:1.68;color:var(--txt2);font-weight:300;
+  font-style:italic;margin-bottom:14px;}
+.test-quote::before{content:'\201C';font-family:'Playfair Display',serif;font-size:28px;
+  color:var(--em-pale);line-height:0;vertical-align:-10px;margin-right:3px;}
+.test-author{display:flex;align-items:center;gap:10px;}
+.test-avatar{width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,#10B981,#34D399);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.test-name{font-size:12.5px;font-weight:600;color:var(--txt);}
+.test-role{font-size:11px;color:var(--txt3);}
+
+.sp-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;width:fit-content;}
+.sp-faces{display:flex;}
+.sp-face{width:26px;height:26px;border-radius:50%;border:2px solid var(--bg2);margin-right:-7px;
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
+.f1{background:linear-gradient(135deg,#10B981,#34D399);}
+.f2{background:linear-gradient(135deg,#7C3AED,#A78BFA);}
+.f3{background:linear-gradient(135deg,#DB2777,#F472B6);}
+.f4{background:linear-gradient(135deg,#D97706,#FCD34D);}
+.sp-text{font-size:13px;color:var(--txt2);margin-left:10px;}
+.sp-text strong{color:var(--txt);font-weight:600;}
+
+.trust-row{display:flex;align-items:center;gap:18px;margin-top:12px;flex-wrap:wrap;}
+.trust-item{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--txt3);}
+.btn-start{background:linear-gradient(135deg,#054F30 0%,#10B981 40%,#34D399 100%);
+  border:none;border-radius:99px;padding:18px 42px;color:#fff;
+  font-size:15px;font-weight:600;cursor:pointer;transition:all .24s;
+  box-shadow:0 6px 24px rgba(16,185,129,.40),0 0 0 1px rgba(52,211,153,.18),inset 0 1px 0 rgba(255,255,255,.16);
+  width:100%;letter-spacing:.025em;}
+.btn-start:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(16,185,129,.56),0 0 0 1px rgba(52,211,153,.28);}
+.wlc-fine{font-size:11px;color:var(--txt4);text-align:center;margin-top:10px;}
+
+/* ══════════════════════════════════ GLASS PANEL */
+.ins-glass{background:var(--surf);backdrop-filter:blur(56px) saturate(1.4);
+  -webkit-backdrop-filter:blur(56px) saturate(1.4);
+  border:1px solid var(--border);border-radius:var(--cr);padding:44px 44px 40px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.028),inset 0 1px 0 rgba(255,255,255,.055),
+  0 32px 90px rgba(0,0,0,.72),0 0 64px rgba(16,185,129,.04);
+  position:relative;overflow:hidden;}
+.ins-glass::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(52,211,153,.48) 30%,rgba(180,255,210,.34) 50%,rgba(52,211,153,.48) 70%,transparent);}
+.ins-tag{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--em-bright);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.ins-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;
+  line-height:1.24;color:var(--txt);margin-bottom:12px;letter-spacing:-.018em;}
+.ins-body{font-size:14px;line-height:1.74;color:var(--txt2);margin-bottom:24px;font-weight:300;}
+.ins-body strong{color:var(--txt);font-weight:500;}
+.btn-cont{background:linear-gradient(135deg,#054F30 0%,#10B981 50%,#34D399 100%);
+  border:none;border-radius:99px;padding:14px 38px;color:#fff;
+  font-size:14px;font-weight:600;cursor:pointer;transition:all .22s;letter-spacing:.02em;
+  box-shadow:0 6px 24px rgba(16,185,129,.34),inset 0 1px 0 rgba(255,255,255,.14);}
+.btn-cont:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(16,185,129,.50);}
+
+/* ══════════════════════════════════ BAR CHART */
+.chart-wrap{margin-bottom:26px;}
+.chart-title{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);margin-bottom:6px;}
+.chart-source{font-size:10px;color:var(--txt4);margin-bottom:16px;font-style:italic;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bar-row-lbl{font-size:11.5px;color:var(--txt3);width:200px;flex-shrink:0;text-align:right;line-height:1.3;}
+.bar-row.hi .bar-row-lbl{color:var(--em-pale);}
+.bar-track{flex:1;height:5px;background:rgba(255,255,255,.04);border-radius:99px;overflow:hidden;}
+.bar-fill{height:100%;width:0;border-radius:99px;background:rgba(16,185,129,.26);transition:width 1.1s cubic-bezier(.4,0,.2,1);}
+.bar-row.hi .bar-fill{background:linear-gradient(90deg,#054F30,#10B981,#34D399);box-shadow:0 0 10px rgba(52,211,153,.38);}
+.bar-pct{font-size:11.5px;color:var(--txt3);width:34px;flex-shrink:0;font-weight:600;}
+.bar-row.hi .bar-pct{color:var(--em-pale);}
+.chart-note{font-size:11px;color:var(--txt3);margin-top:10px;font-style:italic;}
+
+/* Stat cards */
+.stat-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:22px;}
+.stat-card{background:rgba(255,255,255,.020);border:1px solid var(--border2);border-radius:16px;padding:16px 14px;text-align:center;}
+.stat-num{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;
+  background:linear-gradient(135deg,#6EE7B7,#34D399);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;letter-spacing:-.02em;margin-bottom:6px;}
+.stat-lbl{font-size:11px;color:var(--txt3);line-height:1.4;font-weight:400;}
+.stat-src{font-size:9.5px;color:var(--txt4);margin-top:4px;font-style:italic;}
+
+/* ══════════════════════════════════ MOMENTUM */
+.mom-wrap{background:var(--surf);backdrop-filter:blur(56px) saturate(1.4);
+  -webkit-backdrop-filter:blur(56px) saturate(1.4);
+  border:1px solid var(--border);border-radius:var(--cr);padding:42px 44px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.028),inset 0 1px 0 rgba(255,255,255,.055),
+  0 32px 90px rgba(0,0,0,.72);position:relative;text-align:center;overflow:hidden;}
+.mom-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--em) 25%,rgba(180,255,210,.38) 50%,var(--em) 75%,transparent);}
+.mom-pct{font-family:'Playfair Display',serif;font-size:74px;font-weight:900;
+  background:linear-gradient(135deg,#6EE7B7 0%,#34D399 50%,#A7F3D0 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;letter-spacing:-.04em;margin-bottom:4px;}
+.mom-pct-lbl{font-size:11px;color:var(--txt3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:22px;}
+.mom-rule{width:36px;height:1px;background:var(--border2);margin:0 auto 20px;}
+.mom-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;
+  line-height:1.26;color:var(--txt);margin-bottom:11px;letter-spacing:-.018em;}
+.mom-body{font-size:13.5px;line-height:1.74;color:var(--txt2);margin-bottom:24px;
+  font-weight:300;max-width:460px;margin-left:auto;margin-right:auto;}
+.recip-box{background:rgba(16,185,129,.055);border:1px solid rgba(16,185,129,.14);
+  border-radius:16px;padding:16px 20px;margin-bottom:20px;text-align:left;}
+.recip-label{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--em-pale);margin-bottom:7px;}
+.recip-text{font-size:13px;line-height:1.66;color:var(--txt2);font-weight:300;}
+.recip-text strong{color:var(--txt);font-weight:500;}
+.loss-box{background:rgba(245,197,24,.04);border:1px solid rgba(245,197,24,.14);
+  border-radius:16px;padding:14px 18px;margin-bottom:20px;text-align:left;}
+.loss-label{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(245,197,24,.8);margin-bottom:6px;}
+.loss-text{font-size:12.5px;color:rgba(230,200,120,.64);line-height:1.62;font-weight:300;}
+
+/* ══════════════════════════════════ CALCULATING */
+.calc-wrap{background:var(--surf);backdrop-filter:blur(56px) saturate(1.4);
+  -webkit-backdrop-filter:blur(56px) saturate(1.4);
+  border:1px solid var(--border);border-radius:var(--cr);padding:52px 44px 48px;
+  box-shadow:0 32px 90px rgba(0,0,0,.72);position:relative;text-align:center;overflow:hidden;}
+.calc-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(52,211,153,.48) 30%,rgba(180,255,210,.34) 50%,rgba(52,211,153,.48) 70%,transparent);}
+.calc-counter-ring{width:148px;height:148px;margin:0 auto 28px;position:relative;}
+.calc-ring{width:148px;height:148px;border-radius:50%;position:absolute;inset:0;
+  border:2px solid rgba(16,185,129,.12);border-top-color:var(--em-hi);animation:spin 1.4s linear infinite;}
+.calc-ring-inner{position:absolute;inset:16px;border-radius:50%;
+  border:1.5px solid rgba(16,185,129,.07);border-bottom-color:rgba(52,211,153,.28);animation:spin 2.2s linear infinite reverse;}
+.calc-ring-pulse{position:absolute;inset:30px;border-radius:50%;
+  border:1px solid rgba(16,185,129,.06);border-left-color:rgba(167,243,208,.18);animation:spin 3s linear infinite;}
+.calc-num-display{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.calc-num{font-family:'Playfair Display',serif;font-size:46px;font-weight:900;
+  background:linear-gradient(135deg,#6EE7B7,#34D399);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:-.04em;line-height:1;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.calc-tag{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--em-pale);margin-bottom:10px;}
+.calc-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--txt);margin-bottom:10px;letter-spacing:-.018em;}
+.calc-sub{font-size:13.5px;color:var(--txt2);margin-bottom:26px;font-weight:300;line-height:1.66;}
+.calc-steps{text-align:left;max-width:340px;margin:0 auto;}
+.calc-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--txt3);margin-bottom:12px;}
+.calc-step.done{color:var(--txt2);}
+.calc-step.active{color:var(--em-pale);}
+.step-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.08);flex-shrink:0;transition:background .4s;}
+.calc-step.done .step-dot{background:var(--em);box-shadow:0 0 8px rgba(16,185,129,.5);}
+.calc-step.active .step-dot{background:var(--em-hi);box-shadow:0 0 10px rgba(52,211,153,.8);animation:pulse 1.1s ease-in-out infinite;}
+
+/* ══════════════════════════════════ RESULTS */
+.res-wrap{width:100%;max-width:608px;margin:0 auto;}
+
+.age-reveal-panel{background:var(--surf);backdrop-filter:blur(56px) saturate(1.4);
+  -webkit-backdrop-filter:blur(56px) saturate(1.4);
+  border:1px solid var(--border);border-radius:var(--cr);
+  padding:40px 40px 36px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.028),inset 0 1px 0 rgba(255,255,255,.055),
+  0 32px 80px rgba(0,0,0,.70);position:relative;overflow:hidden;text-align:center;margin-bottom:14px;}
+.age-reveal-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(52,211,153,.52) 25%,rgba(180,255,210,.38) 50%,rgba(52,211,153,.52) 75%,transparent);}
+.age-eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--em-bright);margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:7px;}
+.age-number{font-family:'Playfair Display',serif;font-size:110px;font-weight:900;
+  background:linear-gradient(135deg,#6EE7B7 0%,#34D399 40%,#A7F3D0 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:0.9;letter-spacing:-.06em;margin-bottom:8px;
+  animation:ageGlow 3s ease-in-out infinite;}
+@keyframes ageGlow{0%,100%{filter:brightness(1);}50%{filter:brightness(1.15);}}
+.age-label{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--txt3);margin-bottom:20px;}
+.age-gap-statement{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;
+  color:var(--txt);line-height:1.36;margin-bottom:12px;letter-spacing:-.012em;}
+.age-gap-statement .gap-hl{background:linear-gradient(135deg,#F5C518,#FDE047);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.age-gap-statement .gap-em{background:linear-gradient(135deg,#6EE7B7,#34D399);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.age-gap-sub{font-size:13.5px;color:var(--txt2);line-height:1.68;font-weight:300;max-width:420px;margin:0 auto;}
+
+/* Age comparison viz */
+.age-compare{display:flex;align-items:center;justify-content:center;gap:32px;
+  margin:20px 0;padding:18px 24px;
+  background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.10);border-radius:18px;}
+.age-cmp-item{text-align:center;}
+.age-cmp-num{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;line-height:1;letter-spacing:-.04em;}
+.age-cmp-num.chrono{color:rgba(167,243,208,0.55);}
+.age-cmp-num.comm{background:linear-gradient(135deg,#6EE7B7,#34D399);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.age-cmp-lbl{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--txt4);margin-top:4px;}
+.age-cmp-div{width:1px;height:50px;background:var(--border2);}
+.age-cmp-arrow{font-size:22px;color:var(--txt3);}
+
+/* Archetype */
+.archetype-panel{background:var(--surf);backdrop-filter:blur(56px);-webkit-backdrop-filter:blur(56px);
+  border:1px solid var(--border);border-radius:var(--cr);padding:32px 36px;
+  box-shadow:0 24px 60px rgba(0,0,0,.52);position:relative;overflow:hidden;margin-bottom:14px;}
+.archetype-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(52,211,153,.4),transparent);}
+.arch-eyebrow{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--em-bright);margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.arch-name{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;
+  color:var(--txt);letter-spacing:-.018em;margin-bottom:12px;}
+.arch-insight{font-size:14px;line-height:1.74;color:var(--txt2);font-weight:300;}
+.arch-insight strong{color:var(--txt);font-weight:500;}
+
+/* Dimension timeline */
+.dims-panel{background:var(--surf);backdrop-filter:blur(56px);-webkit-backdrop-filter:blur(56px);
+  border:1px solid var(--border);border-radius:var(--cr);padding:30px 36px 28px;
+  box-shadow:0 24px 60px rgba(0,0,0,.52);position:relative;overflow:hidden;margin-bottom:14px;}
+.dims-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(52,211,153,.4),transparent);}
+.dims-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.dims-title{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--txt3);}
+.dims-legend{display:flex;align-items:center;gap:14px;}
+.dims-leg{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--txt4);}
+.dims-leg-dot{width:7px;height:7px;border-radius:50%;}
+.dim-row{margin-bottom:14px;}
+.dim-row:last-child{margin-bottom:0;}
+.dim-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.dim-name{font-size:12.5px;color:var(--txt2);font-weight:500;}
+.dim-age-badge{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;
+  color:var(--txt);letter-spacing:-.02em;}
+.dim-timeline{position:relative;height:6px;background:rgba(255,255,255,.038);border-radius:99px;overflow:visible;}
+.dim-track-fill{position:absolute;left:0;top:0;height:100%;border-radius:99px;
+  transition:width 1.3s cubic-bezier(.4,0,.2,1);}
+.dim-marker{position:absolute;top:50%;transform:translate(-50%,-50%);
+  width:14px;height:14px;border-radius:50%;border:2px solid var(--bg);
+  transition:left 1.3s cubic-bezier(.4,0,.2,1);}
+.dim-axis{display:flex;justify-content:space-between;margin-top:5px;}
+.dim-axis-lbl{font-size:9px;color:var(--txt4);font-weight:400;}
+
+/* Download CTA */
+.dl-panel{background:var(--surf);backdrop-filter:blur(56px);-webkit-backdrop-filter:blur(56px);
+  border:1px solid var(--border);border-radius:var(--cr);padding:32px 36px;
+  box-shadow:0 24px 60px rgba(0,0,0,.55);position:relative;overflow:hidden;}
+.dl-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(52,211,153,.38),transparent);}
+.dl-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:20px;flex-wrap:wrap;}
+.dl-text h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--txt);margin-bottom:6px;letter-spacing:-.015em;}
+.dl-text p{font-size:13px;color:var(--txt2);line-height:1.64;font-weight:300;max-width:300px;}
+.dl-urgency{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.14);
+  border-radius:14px;padding:12px 16px;flex-shrink:0;}
+.dl-urgency-lbl{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--em-pale);margin-bottom:4px;}
+.dl-urgency-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--txt);letter-spacing:-.02em;}
+.store-row{display:flex;gap:12px;flex-wrap:wrap;}
+.store-btn{display:flex;align-items:center;gap:12px;border-radius:16px;padding:14px 22px;
+  transition:all .24s;min-width:176px;box-shadow:0 4px 16px rgba(0,0,0,.3);}
+.store-btn.apple-btn{background:rgba(255,255,255,.060);border:1px solid rgba(255,255,255,.10);color:var(--txt);}
+.store-btn.apple-btn:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.20);
+  transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.5);}
+.store-btn.play-btn{background:rgba(16,185,129,.06);border:1px solid rgba(52,211,153,.18);color:var(--txt);}
+.store-btn.play-btn:hover{background:rgba(16,185,129,.11);border-color:rgba(52,211,153,.32);
+  transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.5),0 0 24px rgba(16,185,129,.10);}
+.s-icon{flex-shrink:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
+.s-sub{font-size:10px;color:var(--txt3);font-weight:400;margin-bottom:2px;}
+.s-name{font-size:14px;font-weight:600;}
+.dl-fine{font-size:11px;color:var(--txt4);margin-top:14px;}
+
+/* Plan modal */
+.plan-modal-overlay{position:fixed;inset:0;z-index:1000;
+  background:rgba(2,12,5,0.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .32s;}
+.plan-modal-overlay.active{opacity:1;pointer-events:all;}
+.plan-modal-card{background:var(--surf);backdrop-filter:blur(64px);-webkit-backdrop-filter:blur(64px);
+  border:1px solid var(--border);border-radius:28px;padding:40px 36px;
+  max-width:420px;width:100%;position:relative;
+  box-shadow:0 40px 100px rgba(0,0,0,.85),0 0 80px rgba(16,185,129,.06);
+  transform:scale(.94) translateY(10px);transition:transform .32s cubic-bezier(.34,1.56,.64,1);}
+.plan-modal-overlay.active .plan-modal-card{transform:scale(1) translateY(0);}
+.plan-modal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;border-radius:28px 28px 0 0;
+  background:linear-gradient(90deg,transparent,rgba(52,211,153,.6) 30%,rgba(180,255,210,.38) 50%,rgba(52,211,153,.6) 70%,transparent);}
+.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.06);
+  border:1px solid var(--border2);border-radius:50%;width:30px;height:30px;
+  color:var(--txt3);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .18s;}
+.modal-close:hover{background:rgba(255,255,255,.1);color:var(--txt);}
+.modal-icon{font-size:36px;text-align:center;margin-bottom:16px;}
+.modal-head h3{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;
+  color:var(--txt);text-align:center;letter-spacing:-.02em;margin-bottom:4px;}
+.modal-price{text-align:center;font-size:14px;color:var(--em-pale);margin-bottom:12px;font-weight:500;}
+.modal-desc{font-size:13.5px;color:var(--txt2);text-align:center;line-height:1.64;font-weight:300;margin-bottom:24px;}
+.modal-stores{display:flex;flex-direction:column;gap:12px;margin-bottom:16px;}
+.modal-store-btn{display:flex;align-items:center;gap:14px;border-radius:16px;padding:16px 22px;cursor:pointer;transition:all .22s;}
+.modal-store-btn.apple{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--txt);}
+.modal-store-btn.apple:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);transform:translateY(-1px);}
+.modal-store-btn.google{background:rgba(16,185,129,.07);border:1px solid rgba(52,211,153,.18);color:var(--txt);}
+.modal-store-btn.google:hover{background:rgba(16,185,129,.12);border-color:rgba(52,211,153,.3);transform:translateY(-1px);}
+.modal-store-icon{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.modal-store-text .ms-sub{font-size:10px;color:var(--txt3);font-weight:400;margin-bottom:2px;}
+.modal-store-text .ms-name{font-size:15px;font-weight:600;color:var(--txt);}
+.modal-fine{font-size:11px;color:var(--txt4);text-align:center;}
+
+/* ══════════════════════════════════ CONFETTI */
+.confetti-field{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden;}
+.cp{position:absolute;border-radius:50%;animation:cfall linear forwards;opacity:0;}
+@keyframes cfall{0%{opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+
+/* ══════════════════════════════════ FOOTER */
+footer{position:relative;z-index:10;padding:24px 40px 30px;text-align:center;border-top:1px solid var(--border3);}
+.footer-links{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;}
+.footer-link{font-size:11.5px;color:var(--txt4);transition:color .18s;}
+.footer-link:hover{color:var(--em-pale);}
+.footer-sep{width:3px;height:3px;border-radius:50%;background:var(--txt4);}
+.footer-copy{font-size:10.5px;color:var(--txt4);margin-top:8px;}
+
+/* ══════════════════════════════════ DESKTOP */
+@media(min-width:860px){
+  .hdr{padding:28px 60px 0;}
+  .prog-wrap{padding:18px 60px 0;}
+  .screens{padding:36px 32px 100px;}
+  .card{max-width:624px;padding:52px 56px 48px;}
+  .card-c{max-width:640px;}
+  .wlc-title{font-size:46px;}
+  .q-text{font-size:30px;}
+  .ins-title{font-size:32px;}
+  .mom-title{font-size:30px;}
+  .ins-glass,.mom-wrap{padding:50px 56px 46px;}
+  .calc-wrap{padding:58px 56px 52px;}
+  .dims-panel,.archetype-panel,.dl-panel{padding:34px 42px;}
+  .age-reveal-panel{padding:44px 48px 40px;}
+  .age-number{font-size:126px;}
+  .opts{gap:9px;}
+  .opt{padding:15px 20px;font-size:14px;}
+  .store-row{flex-wrap:nowrap;}
+  .store-btn{min-width:188px;}
+}
+@media(min-width:1100px){
+  .hdr{padding:30px 80px 0;}
+  .prog-wrap{padding:20px 80px 0;}
+  .screens{padding:40px 40px 110px;}
+  .card{max-width:644px;}
+  .card-c{max-width:660px;}
+}
+@media(max-width:680px){
+  .hdr{padding:14px 18px 0;}
+  .prog-wrap{padding:10px 18px 0;}
+  .q-counter{display:none;}
+  .card{padding:26px 20px 22px;}
+  .q-text{font-size:22px;}
+  .wlc-title{font-size:30px;}
+  .age-number{font-size:80px;}
+  .age-compare{gap:16px;padding:14px 16px;}
+  .age-cmp-num{font-size:28px;}
+  .stat-cards{grid-template-columns:1fr;}
+  .dl-top{flex-direction:column;}
+  .store-row{flex-direction:column;}
+  .bar-row-lbl{width:130px;font-size:10.5px;}
+  .ins-glass,.mom-wrap{padding:26px 22px 22px;}
+  .calc-wrap{padding:32px 22px 28px;}
+  .dims-panel,.archetype-panel,.dl-panel{padding:24px 20px;}
+  .age-reveal-panel{padding:28px 22px 24px;}
+  .skel-overlay{padding:26px 20px 22px;}
+  .card-c .skel-overlay{padding:26px 22px 22px;}
+  footer{padding:20px 24px;}
+}
+@media(max-width:480px){
+  .card{padding:20px 15px 18px;}
+  .q-text{font-size:20px;}
+  .opts{gap:6px;}
+  .opt{padding:12px 14px;font-size:12.5px;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <div class="orb o3"></div><div class="orb o4"></div><div class="orb o5"></div>
+</div>
+<div class="bg-grid"></div>
+<div class="bg-noise"></div>
+<div class="confetti-field" id="confetti"></div>
+
+<!-- Plan Modal -->
+<div class="plan-modal-overlay" id="planModal" onclick="closePlanModal(event)">
+  <div class="plan-modal-card">
+    <button class="modal-close" onclick="closePlanModal()">✕</button>
+    <div class="modal-icon" id="modalIcon">🌱</div>
+    <div class="modal-head"><h3>Start <span id="modalPlanName">Pro</span></h3></div>
+    <div class="modal-price" id="modalPlanPrice">$17.99 / month</div>
+    <p class="modal-desc">Download Conversly to activate your personalized coaching plan calibrated to your Communication Age and begin your first session today.</p>
+    <div class="modal-stores">
+      <a class="modal-store-btn apple" href="https://apps.apple.com/app/conversly-communication-gym/id6753739129" target="_blank" rel="noopener">
+        <div class="modal-store-icon"><svg width="28" height="34" viewBox="0 0 28 34" fill="none"><path d="M23.198 18.084c-.036-4.074 3.336-6.042 3.49-6.137-1.904-2.78-4.862-3.164-5.91-3.205-2.5-.255-4.888 1.476-6.157 1.476-1.27 0-3.218-1.443-5.294-1.403-2.716.043-5.23 1.588-6.624 4.005-2.822 4.888-.73 12.12 2.03 16.09 1.34 1.94 2.93 4.118 5.026 4.042 2.024-.082 2.786-1.3 5.237-1.3 2.45 0 3.138 1.3 5.28 1.26 2.18-.042 3.554-1.98 4.874-3.927 1.544-2.245 2.18-4.422 2.213-4.534-.047-.022-4.24-1.63-4.277-6.367zM18.996 5.74c1.11-1.36 1.864-3.238 1.66-5.116-1.604.065-3.548 1.072-4.697 2.428-1.03 1.192-1.934 3.104-1.692 4.94 1.79.14 3.617-.912 4.73-2.252z" fill="white"/></svg></div>
+        <div class="modal-store-text"><div class="ms-sub">Download on the</div><div class="ms-name">App Store</div></div>
+      </a>
+      <a class="modal-store-btn google" href="https://play.google.com/store/apps/details?id=com.conversly.app" target="_blank" rel="noopener">
+        <div class="modal-store-icon"><svg width="28" height="31" viewBox="0 0 28 31" fill="none"><path d="M.5.75C.19 1.09 0 1.62 0 2.31v26.38c0 .69.19 1.22.5 1.56l.08.08L15.12 15.5v-.37L.58.67.5.75z" fill="url(#gp1m)"/><path d="M20.08 20.44l-4.96-4.94v-.37l4.96-4.94.11.06 5.88 3.35c1.68.96 1.68 2.52 0 3.48l-5.88 3.35-.11.07z" fill="url(#gp2m)"/><path d="M20.19 20.38L15.12 15.3 .5 30.25c.55.59 1.47.66 2.51.07l17.18-9.94z" fill="url(#gp3m)"/><path d="M20.19 10.62L3.01.68C1.97.09 1.05.16.5.75L15.12 15.7l5.07-5.08z" fill="url(#gp4m)"/><defs><linearGradient id="gp1m" x1="13.85" y1="1.89" x2="-6.56" y2="15.55" gradientUnits="userSpaceOnUse"><stop stop-color="#00A0FF"/><stop offset="1" stop-color="#00E3FF"/></linearGradient><linearGradient id="gp2m" x1="27.01" y1="15.3" x2="-.55" y2="15.3" gradientUnits="userSpaceOnUse"><stop stop-color="#FFE000"/><stop offset="1" stop-color="#FF9C00"/></linearGradient><linearGradient id="gp3m" x1="17.51" y1="18.01" x2="-8.65" y2="49.34" gradientUnits="userSpaceOnUse"><stop stop-color="#FF3A44"/><stop offset="1" stop-color="#C31162"/></linearGradient><linearGradient id="gp4m" x1="-2.74" y1="-11.43" x2="9.14" y2="5.97" gradientUnits="userSpaceOnUse"><stop stop-color="#32A071"/><stop offset="1" stop-color="#00F076"/></linearGradient></defs></svg></div>
+        <div class="modal-store-text"><div class="ms-sub">Get it on</div><div class="ms-name">Google Play</div></div>
+      </a>
+    </div>
+    <p class="modal-fine">Free to start · No credit card required · Profile syncs on launch</p>
+  </div>
+</div>
+
+<div class="app">
+  <div class="hdr">
+    <a class="logo" href="#" onclick="location.reload();return false;" title="Restart">
+      <span class="logo-name">Conversly Communication Age</span>
+    </a>
+    <span class="q-counter" id="qCounter"></span>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:3%"></div></div>
+    <div class="prog-milestones" id="progMs">
+      <span class="prog-ms" data-at="25">Baseline</span>
+      <span class="prog-ms" data-at="50">Patterns</span>
+      <span class="prog-ms" data-at="75">Depth</span>
+      <span class="prog-ms" data-at="100">Your Age</span>
+    </div>
+  </div>
+  <div class="screens" id="screens">
+    <div class="screens-spacer" id="screensSpacer" aria-hidden="true"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a class="footer-link" href="https://conversly.io/" target="_blank" rel="noopener">conversly.io</a>
+    <span class="footer-sep"></span>
+    <a class="footer-link" href="https://links.conversly.io/" target="_blank" rel="noopener">links.conversly.io</a>
+    <span class="footer-sep"></span>
+    <a class="footer-link" href="https://apps.apple.com/app/conversly-communication-gym/id6753739129" target="_blank" rel="noopener">App Store</a>
+    <span class="footer-sep"></span>
+    <a class="footer-link" href="https://play.google.com/store/apps/details?id=com.conversly.app" target="_blank" rel="noopener">Google Play</a>
+  </div>
+  <div class="footer-copy">© 2025 Conversly · All rights reserved</div>
+</footer>
+
+<script>
+/* ══════════════════════════════════ STATE */
+const S = { screen: 0, answers: {} };
+
+/* ══════════════════════════════════ SCREENS */
+const SCREENS = [
+
+/* 0 — WELCOME */
+{ id:'welcome', type:'welcome' },
+
+/* Q1 — Age range (for the contrast reveal) */
+{ id:'q1', type:'q', qNum:1, total:15, tag:'Your Baseline',
+  milestone: true,
+  text:'Before we calculate your Communication Age — how old are you?',
+  sub:"Your chronological age is just the starting point. What we calculate next will tell you something far more interesting.",
+  opts:[
+    {lbl:'Under 25', val:'under25'},
+    {lbl:'25–34', val:'25_34'},
+    {lbl:'35–44', val:'35_44'},
+    {lbl:'45–54', val:'45_54'},
+    {lbl:'55 or older', val:'55plus'}
+  ]},
+
+/* Q2 — Feedback reception */
+{ id:'q2', type:'q', qNum:2, total:15, tag:'Emotional Maturity',
+  text:'When someone gives you critical feedback, your honest first response is…',
+  sub:'This is one of the highest-signal questions in the entire assessment. Answer for how you actually respond, not how you wish you did.',
+  opts:[
+    {lbl:'Getting defensive — it feels like a personal attack', val:'defensive'},
+    {lbl:'Listening, but letting it quietly affect my self-worth', val:'struggle_worth'},
+    {lbl:'Hearing the words but rarely letting them change my behavior', val:'hear_not_change'},
+    {lbl:'Welcoming it, even when it stings a little', val:'welcome'},
+    {lbl:'Actively seeking it out — it\'s the fastest path to growth', val:'seek_out'}
+  ]},
+
+/* Q3 — Conflict default */
+{ id:'q3', type:'q', qNum:3, total:15, tag:'Conflict Maturity',
+  text:'When conflict enters a relationship or conversation, you tend to…',
+  sub:'Your default response to conflict is one of the most reliable indicators of communication maturity across any age.',
+  opts:[
+    {lbl:'Avoid it entirely — I\'ll wait until it naturally blows over', val:'avoid'},
+    {lbl:'Go quiet and hope the other person works it out themselves', val:'go_quiet'},
+    {lbl:'Address it, but only once I\'m completely backed into a corner', val:'when_cornered'},
+    {lbl:'Name it directly, though not always with the most grace', val:'direct_not_graceful'},
+    {lbl:'Move toward it — productive conflict is how relationships grow', val:'productive'}
+  ]},
+
+/* Q4 — Disagreement */
+{ id:'q4', type:'q', qNum:4, total:15, tag:'Assertiveness',
+  text:'When you genuinely disagree with someone, how do you typically handle it?',
+  sub:'The gap between what you think and what you actually say is one of the most common communication age gaps.',
+  opts:[
+    {lbl:'Stay silent and hold the frustration entirely inside', val:'stay_silent'},
+    {lbl:'Drop subtle hints and hope they pick up on it', val:'subtle_hints'},
+    {lbl:'Speak up, but emotionally — and sometimes say things I regret', val:'emotional'},
+    {lbl:'State my view clearly but feel visible tension while doing it', val:'clear_tense'},
+    {lbl:'Disagree with precision and warmth, even in high-stakes moments', val:'precise_warm'}
+  ]},
+
+/* INSIGHT 1 */
+{ id:'insight1', type:'insight1', iPct:30 },
+
+/* Q5 — Anger response */
+{ id:'q5', type:'q', qNum:5, total:15, tag:'Emotional Intelligence',
+  text:'When someone is visibly upset with you, your instinctive response is…',
+  sub:'How you respond to another person\'s anger reveals your emotional regulation age more than almost any other pattern.',
+  opts:[
+    {lbl:'Shut down and disengage from the conversation entirely', val:'shutdown'},
+    {lbl:'Apologize immediately — even when I\'m not sure I was wrong', val:'apologize_anyway'},
+    {lbl:'Get defensive and quietly start building my counter-argument', val:'defensive'},
+    {lbl:'Stay calm externally, though I\'m processing intensely inside', val:'calm_externally'},
+    {lbl:'Hold space for their emotion while keeping my own footing', val:'hold_space'}
+  ]},
+
+/* Q6 — Listening */
+{ id:'q6', type:'q', qNum:6, total:15, tag:'Listening Depth',
+  text:'When someone shares something genuinely important with you, you\'re typically…',
+  sub:'Most people believe they\'re better listeners than they actually are. This question is designed to close that gap.',
+  opts:[
+    {lbl:'Mentally planning what to say next while they\'re still talking', val:'planning_response'},
+    {lbl:'Half-present — I catch the surface but miss the deeper subtext', val:'half_present'},
+    {lbl:'Mostly there, though my mind occasionally drifts away', val:'mostly_there'},
+    {lbl:'Fully present and genuinely curious about their experience', val:'fully_present'},
+    {lbl:'Present and reflecting back — they leave feeling truly heard', val:'reflect_back'}
+  ]},
+
+/* Q7 — Interrupt */
+{ id:'q7', type:'q', qNum:7, total:15, tag:'Listening Depth',
+  text:'How often do you interrupt people before they\'ve finished their thought?',
+  sub:'Interrupting is a listening pattern, not a rudeness pattern. It reveals where your conversational attention actually lives.',
+  opts:[
+    {lbl:'Often — I finish sentences or jump in before they\'re done', val:'often'},
+    {lbl:'More than I\'d like — I catch myself doing it regularly', val:'regularly'},
+    {lbl:'Occasionally, and I\'m usually aware of it when it happens', val:'occasionally'},
+    {lbl:'Rarely — I wait until they\'ve fully expressed their thought', val:'rarely'},
+    {lbl:'Almost never — silence after they finish is genuinely comfortable', val:'almost_never'}
+  ]},
+
+/* Q8 — Being wrong */
+{ id:'q8', type:'q', qNum:8, total:15, tag:'Self-Awareness',
+  milestone: true,
+  text:'When you realize mid-conversation that you were wrong about something, you…',
+  sub:'How you navigate being wrong is one of the most precise measurements of communication maturity we have.',
+  opts:[
+    {lbl:'Double down — changing course mid-conversation feels like losing', val:'double_down'},
+    {lbl:'Find a way to deflect or quietly shift the subject', val:'deflect'},
+    {lbl:'Acknowledge it eventually, but it takes a moment to arrive', val:'takes_moment'},
+    {lbl:'Acknowledge it clearly and move forward without drama', val:'acknowledge'},
+    {lbl:'Own it immediately — with genuine curiosity about what I missed', val:'own_immediately'}
+  ]},
+
+/* MOMENTUM 1 */
+{ id:'mom1', type:'momentum', pct:52,
+  title:"You\'re halfway through the most revealing part.",
+  body:"The patterns you\'ve described so far paint a clear picture of your communication baseline. The next section goes deeper — into the less obvious behaviors that separate communicators who plateau from those who keep growing.",
+  recipLabel:'What 50,000 Conversly users taught us',
+  recipText:"<strong>Communication age and chronological age have almost zero correlation.</strong> We've seen 24-year-olds with the communication maturity of someone twice their age — and 52-year-olds still operating with patterns formed in adolescence. The patterns are what matters, not the years.",
+  lossText:"Every year you communicate below your actual potential, the gap between where you are and where you could be compounds quietly. The people advancing fastest around you aren't smarter — they've closed this gap." },
+
+/* Q9 — Boundaries */
+{ id:'q9', type:'q', qNum:9, total:15, tag:'Boundary Intelligence',
+  text:'Setting limits with people you genuinely care about feels…',
+  sub:'The ability to hold a boundary with someone you love is one of the most advanced communication skills there is.',
+  opts:[
+    {lbl:'Nearly impossible — I\'d rather absorb the cost than disappoint them', val:'nearly_impossible'},
+    {lbl:'Very difficult — I do it eventually, but guilt always follows', val:'very_difficult'},
+    {lbl:'Manageable sometimes, though I second-guess the delivery', val:'manageable'},
+    {lbl:'Usually natural, even if I don\'t always find the perfect words', val:'usually_natural'},
+    {lbl:'Entirely natural — I see it as an act of care for both of us', val:'entirely_natural'}
+  ]},
+
+/* Q10 — Silence */
+{ id:'q10', type:'q', qNum:10, total:15, tag:'Presence & Poise',
+  text:'When silence falls in the middle of a conversation, your instinct is…',
+  sub:'Your relationship to silence is one of the quietest and most powerful indicators of communication maturity.',
+  opts:[
+    {lbl:'Immediate mild panic — I rush to fill it with anything at all', val:'immediate_panic'},
+    {lbl:'Noticeable discomfort — I move quickly to break it', val:'discomfort'},
+    {lbl:'Mild unease, though I can sit with it briefly if needed', val:'mild_discomfort'},
+    {lbl:'Fairly comfortable — I\'ve learned to see it as part of the flow', val:'fairly_comfortable'},
+    {lbl:'Strategic — I use silence intentionally as one of my sharpest tools', val:'use_strategically'}
+  ]},
+
+/* Q11 — Room reading */
+{ id:'q11', type:'q', qNum:11, total:15, tag:'Presence & Poise',
+  text:'Your ability to read unspoken emotional dynamics in a room or conversation…',
+  sub:'Social awareness — the ability to sense what isn\'t being said — is where elite communicators separate from everyone else.',
+  opts:[
+    {lbl:'Rarely reliable — subtext and emotional undercurrents mostly escape me', val:'rarely'},
+    {lbl:'Sometimes — I pick it up but it\'s not consistent or dependable', val:'sometimes'},
+    {lbl:'Often — I sense the energy but can\'t always name what I\'m reading', val:'often'},
+    {lbl:'Usually accurate — I notice shifts in mood, energy, and tension', val:'usually'},
+    {lbl:'Entirely instinctive — I read the room before I read the words', val:'instinctive'}
+  ]},
+
+/* INSIGHT 2 */
+{ id:'insight2', type:'insight2', iPct:74 },
+
+/* Q12 — Compliment reception */
+{ id:'q12', type:'q', qNum:12, total:15, tag:'Emotional Fluency',
+  text:'When someone pays you a sincere, meaningful compliment, your response is typically…',
+  sub:'How you receive appreciation is a precise window into your relationship with your own worth.',
+  opts:[
+    {lbl:'"Oh, it was nothing" — I minimize it almost reflexively', val:'dismiss'},
+    {lbl:'I deflect with humor or immediately redirect attention to them', val:'deflect'},
+    {lbl:'An awkward "thank you" and a quick pivot to the next topic', val:'awkward'},
+    {lbl:'Receiving it graciously and genuinely', val:'gracious'},
+    {lbl:'Receiving it fully — letting them see that their words actually landed', val:'receive_fully'}
+  ]},
+
+/* Q13 — Vulnerability */
+{ id:'q13', type:'q', qNum:13, total:15, tag:'Emotional Fluency',
+  text:'Sharing how you truly feel — especially in moments of real struggle — comes…',
+  sub:'The willingness to be vulnerable without losing yourself is the final frontier of communication maturity.',
+  opts:[
+    {lbl:'Almost never — I show strength and composure before I show softness', val:'almost_never'},
+    {lbl:'Rarely — only with people I\'ve known and trusted for years', val:'rarely'},
+    {lbl:'Sometimes, though I almost always soften it or undersell it', val:'sometimes'},
+    {lbl:'Often, with the people who matter most to me', val:'often'},
+    {lbl:'Freely and without apology — I\'ve learned that it\'s a form of courage', val:'freely'}
+  ]},
+
+/* Q14 — Emotional processing */
+{ id:'q14', type:'q', qNum:14, total:15, tag:'Self-Awareness',
+  milestone: true,
+  text:'Before responding to an emotionally charged situation, you typically…',
+  sub:'The gap between stimulus and response is where all emotional intelligence lives. This is your window into how wide yours is.',
+  opts:[
+    {lbl:'React immediately — the words leave before I can stop them', val:'react_immediately'},
+    {lbl:'Sometimes pause, but often respond before I\'ve fully processed', val:'sometimes_pause'},
+    {lbl:'Try to pause, though pressure usually overrides the intention', val:'try_pause'},
+    {lbl:'Usually manage to pause and choose my response deliberately', val:'usually_pause'},
+    {lbl:'Consistently create space between stimulus and response — always', val:'always_pause'}
+  ]},
+
+/* Q15 — Asking for help */
+{ id:'q15', type:'q', qNum:15, total:15, tag:'Connection Openness',
+  text:'Asking for support or help when you genuinely need it feels…',
+  sub:'The ability to ask for help without shame is the final piece of the communication maturity puzzle.',
+  opts:[
+    {lbl:'Nearly impossible — I see it as weakness or personal failure', val:'nearly_impossible'},
+    {lbl:'A last resort — I exhaust every alternative before asking', val:'last_resort'},
+    {lbl:'Difficult, though I\'ll do it when the situation truly demands it', val:'difficult'},
+    {lbl:'Relatively comfortable with the right people in my life', val:'comfortable'},
+    {lbl:'Entirely natural — I see asking for help as its own kind of strength', val:'entirely_natural'}
+  ]},
+
+/* MOMENTUM 2 */
+{ id:'mom2', type:'momentum', pct:88,
+  title:"Your Communication Age is almost calculated.",
+  body:"You've now answered 15 questions designed to measure what chronological age never can — the actual maturity, depth, and sophistication of your communication patterns. What comes next will show you something most people never see about themselves.",
+  recipLabel:'Why this number changes everything',
+  recipText:"<strong>Knowing your Communication Age is the prerequisite</strong> to closing the gap. Most people spend years working on the wrong things. Your result shows you exactly where the leverage is — so every minute of practice counts.",
+  lossText:"The gap between your Communication Age and your potential doesn't close on its own. It closes through deliberate, consistent practice — the kind Conversly is built to deliver.",
+  showStats: true },
+
+/* CALCULATING */
+{ id:'calculating', type:'calculating' },
+
+/* RESULTS */
+{ id:'results', type:'results' }
+
+];
+
+/* ══════════════════════════════════ HELPERS */
+function pct(idx){
+  const s=SCREENS[idx];
+  if(s.type==='welcome') return 3;
+  if(s.type==='results') return 100;
+  if(s.type==='calculating') return 96;
+  if(s.type==='momentum') return s.pct;
+  if(s.type==='insight1') return s.iPct||30;
+  if(s.type==='insight2') return s.iPct||74;
+  if(s.qNum) return Math.round(s.qNum/15*100);
+  return 0;
+}
+function qLabel(idx){const s=SCREENS[idx];return s.qNum?`Question ${s.qNum} of 15`:'';}
+function svgCheck(){return`<svg class="chk" viewBox="0 0 8 8" fill="none"><path d="M1 4l2.3 2.3L7 1.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}
+function svgR(){return`<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}
+function svgL(){return`<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11 7H3M6 10L3 7l3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}
+function svgLock(){return`<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1.5" y="5.5" width="10" height="7" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M4 5.5V4a2.5 2.5 0 015 0v1.5" stroke="currentColor" stroke-width="1.2"/></svg>`;}
+function svgClock(){return`<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6.5 4v2.5l1.8 1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`;}
+function svgShield(){return`<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 2L2.5 4v3C2.5 9.5 4.2 11.5 6.5 12c2.3-.5 4-2.5 4-5V4L6.5 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>`;}
+
+/* ══════════════════════════════════ SKELETON */
+function skelInner(type){
+  if(type==='welcome'){return`<div class="skel-line" style="height:10px;width:160px;margin-bottom:20px;"></div><div class="skel-line" style="height:40px;width:88%;margin-bottom:8px;"></div><div class="skel-line" style="height:34px;width:72%;margin-bottom:8px;"></div><div class="skel-line" style="height:34px;width:58%;margin-bottom:22px;"></div><div class="skel-line" style="height:108px;border-radius:20px;margin-bottom:18px;"></div><div class="skel-line" style="height:88px;border-radius:18px;margin-bottom:16px;"></div><div class="skel-line" style="height:54px;border-radius:99px;width:100%;"></div>`;}
+  if(type==='insight'||type==='momentum'){return`<div style="text-align:center"><div class="skel-line" style="height:10px;width:160px;margin:0 auto 20px;border-radius:6px;"></div><div class="skel-line" style="height:28px;width:80%;margin:0 auto 10px;border-radius:8px;"></div><div class="skel-line" style="height:18px;width:58%;margin:0 auto 28px;border-radius:6px;"></div><div class="skel-line" style="height:80px;border-radius:16px;width:100%;margin-bottom:16px;"></div><div class="skel-line" style="height:54px;border-radius:99px;width:60%;margin:0 auto;"></div></div>`;}
+  if(type==='calculating'){return`<div style="text-align:center;padding:20px 0"><div class="skel-line" style="height:148px;width:148px;border-radius:50%;margin:0 auto 28px;"></div><div class="skel-line" style="height:28px;width:55%;margin:0 auto 10px;border-radius:8px;"></div><div class="skel-line" style="height:16px;width:80%;margin:0 auto 8px;border-radius:6px;"></div><div class="skel-line" style="height:16px;width:65%;margin:0 auto 28px;border-radius:6px;"></div>${[1,2,3,4,5].map(()=>`<div class="skel-line" style="height:14px;width:300px;margin:0 auto 12px;border-radius:6px;opacity:.55;"></div>`).join('')}</div>`;}
+  if(type==='results'){return`<div class="skel-line" style="height:10px;width:140px;margin-bottom:18px;border-radius:6px;"></div><div class="skel-line" style="height:80px;width:200px;margin:0 auto 14px;border-radius:10px;"></div><div class="skel-line" style="height:16px;width:70%;margin:0 auto 8px;border-radius:6px;"></div><div class="skel-line" style="height:13px;width:55%;margin:0 auto 24px;border-radius:6px;"></div><div class="skel-line" style="height:72px;border-radius:16px;margin-bottom:12px;"></div><div class="skel-line" style="height:60px;border-radius:16px;margin-bottom:12px;opacity:.8;"></div><div class="skel-line" style="height:60px;border-radius:16px;opacity:.6;"></div>`;}
+  // Q default
+  return`<div class="skel-line sk-tag"></div><div class="skel-line sk-h1"></div><div class="skel-line sk-h2"></div><div class="skel-line sk-sub1"></div><div class="skel-line sk-sub2"></div><div class="skel-line sk-opt"></div><div class="skel-line sk-opt2"></div><div class="skel-line sk-opt3"></div><div class="skel-line sk-opt4"></div>`;
+}
+
+/* ══════════════════════════════════ RENDER WELCOME */
+function renderWelcome(){
+  return`<div class="card active" id="sc-welcome">
+    <div class="skel-overlay">${skelInner('welcome')}</div>
+    <div class="wlc-eyebrow">AI Communication Intelligence <span class="wlc-rule"></span></div>
+    <h1 class="wlc-title">What is your true<br><em>Communication<br>Age?</em></h1>
+    <p class="wlc-body">Your chronological age is just a number. Your Communication Age is a measure of how emotionally mature, self-aware, and sophisticated your actual communication patterns are — and it reveals far more than any birthday.</p>
+
+    <div class="mystery-age">
+      <div class="mystery-num">42</div>
+      <div class="mystery-q">?</div>
+      <div class="mystery-label">Your Communication Age</div>
+    </div>
+
+    <div class="testimonial">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-quote">I'm 38 and my Communication Age came back as 61. It finally explained why I could always hold the room — and it gave me a language for the specific things still holding me back.</p>
+      <div class="test-author">
+        <div class="test-avatar">J</div>
+        <div><div class="test-name">Jordan K.</div><div class="test-role">VP of Operations</div></div>
+      </div>
+    </div>
+
+    <div class="sp-row">
+      <div class="sp-faces">
+        <div class="sp-face f1">A</div><div class="sp-face f2">K</div>
+        <div class="sp-face f3">M</div><div class="sp-face f4">D</div>
+      </div>
+      <span class="sp-text"><strong>50,000+</strong> people have discovered their Communication Age</span>
+    </div>
+
+    <button class="btn-start" onclick="nextScreen()">Calculate My Age &nbsp; ${svgR()}</button>
+    <div class="trust-row">
+      <span class="trust-item"><span>${svgLock()}</span>&nbsp;Completely private</span>
+      <span class="trust-item"><span>${svgClock()}</span>&nbsp;Under 3 minutes</span>
+      <span class="trust-item"><span>${svgShield()}</span>&nbsp;No account needed</span>
+    </div>
+    <p class="wlc-fine">15 questions. Instant results. Nothing shared, ever.</p>
+  </div>`;
+}
+
+/* ══════════════════════════════════ RENDER Q */
+function renderQ(s){
+  const noteHTML = s.note ? `<div class="q-note">${svgLock()}&nbsp;${s.note}</div>` : '';
+  const badgeHTML = s.milestone ? `<div class="milestone-badge" id="mb-${s.id}">✦ &nbsp;Key signal</div>` : '';
+  const opts = s.opts.map(o=>`
+    <button class="opt" data-val="${o.val}" onclick="selectOpt(this,'${s.id}')">
+      <span class="opt-glow"></span><span class="opt-accent"></span>
+      <span class="opt-lbl">${o.lbl}</span>
+      <span class="opt-radio">${svgCheck()}</span>
+    </button>`).join('');
+  return`<div class="card active" id="sc-${s.id}">
+    <div class="skel-overlay">${skelInner('q')}</div>
+    ${badgeHTML}
+    <div class="q-tag"><span class="q-dot"></span>${s.tag}</div>
+    <h2 class="q-text">${s.text}</h2>
+    <p class="q-sub">${s.sub}</p>
+    ${noteHTML}
+    <div class="opts">${opts}</div>
+    <div class="nav">
+      <button class="btn-back" onclick="prevScreen()">${svgL()}&nbsp; Back</button>
+      <button class="btn-next" id="btn-${s.id}" onclick="nextScreen()">Continue &nbsp;${svgR()}</button>
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════ RENDER INSIGHT 1 */
+function renderInsight1(){
+  const a = S.answers;
+  const bars = [
+    {key:'avoid',lbl:'Conflict avoidance keeps communication age low',pct:72},
+    {key:'defensive',lbl:'Defensive feedback response — most common barrier',pct:68},
+    {key:'planning_response',lbl:'Pseudo-listening (planning while they speak)',pct:61},
+    {key:'stay_silent',lbl:'Suppressed disagreement — the silent growth blocker',pct:54},
+    {key:'double_down',lbl:'Inability to admit being wrong in the moment',pct:47},
+  ];
+  const ans = [a.q3, a.q2, a.q6, a.q4, a.q8];
+  const hiVals = ['avoid','defensive','planning_response','stay_silent','double_down'];
+  const barsHTML = bars.map((b,i)=>{
+    const hi = ans[i] === hiVals[i];
+    return`<div class="bar-row${hi?' hi':''}">
+      <div class="bar-row-lbl">${b.lbl}</div>
+      <div class="bar-track"><div class="bar-fill" data-pct="${b.pct}" style="width:0%"></div></div>
+      <span class="bar-pct">${b.pct}%</span>
+    </div>`;}).join('');
+  return`<div class="card-c active" id="sc-insight1">
+    <div class="ins-glass">
+      <div class="skel-overlay" style="border-radius:var(--cr);">${skelInner('insight')}</div>
+      <div class="ins-tag"><span class="q-dot"></span>Research Insight · Communication Maturity Study, n = 50,000+</div>
+      <h2 class="ins-title">The patterns that silently keep your Communication Age low.</h2>
+      <p class="ins-body">Unlike technical skills, communication maturity is shaped almost entirely by <strong>habitual response patterns</strong> — most of which were formed before age 18 and never consciously updated. These are the five most common ones that stall communicators across every chronological age.</p>
+      <div class="chart-wrap">
+        <div class="chart-title">Most common low-maturity communication patterns — professionals across all age groups</div>
+        <div class="chart-source">Source: Conversly Behavioral Research, n = 50,000+ · 2024</div>
+        ${barsHTML}
+        <div class="chart-note">↑ These patterns are entirely learnable. Your coaching curriculum starts exactly here.</div>
+      </div>
+      <button class="btn-cont" onclick="nextScreen()">Continue My Assessment &nbsp;${svgR()}</button>
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════ RENDER INSIGHT 2 */
+function renderInsight2(){
+  return`<div class="card-c active" id="sc-insight2">
+    <div class="ins-glass">
+      <div class="skel-overlay" style="border-radius:var(--cr);">${skelInner('insight')}</div>
+      <div class="ins-tag"><span class="q-dot"></span>Research · Harvard, McKinsey & Conversly Data Synthesis</div>
+      <h2 class="ins-title">What a high Communication Age actually predicts.</h2>
+      <p class="ins-body">Communication Age isn't a soft metric. The research on what high communication maturity <strong>actually produces</strong> in real outcomes is more concrete than most people expect.</p>
+      <div class="stat-cards" style="margin-bottom:20px;">
+        <div class="stat-card"><div class="stat-num">87%</div><div class="stat-lbl">Of top-tier leaders score in the top quartile for communication maturity regardless of technical skill</div><div class="stat-src">McKinsey Leadership Study, 2023</div></div>
+        <div class="stat-card"><div class="stat-num">3.4×</div><div class="stat-lbl">More likely to be in high-quality relationships — professionally and personally</div><div class="stat-src">Harvard Adult Development Study</div></div>
+        <div class="stat-card"><div class="stat-num">91 days</div><div class="stat-lbl">Average time to meaningfully raise Communication Age with deliberate daily practice</div><div class="stat-src">Conversly Platform Data, 2024</div></div>
+      </div>
+      <div class="recip-box" style="margin-bottom:0;">
+        <div class="recip-label">The good news</div>
+        <div class="recip-text">Unlike IQ or personality type, <strong>Communication Age is entirely trainable.</strong> The patterns that determine it are behavioral — and behavioral patterns change with consistent, deliberate practice. That's the entire premise of Conversly.</div>
+      </div>
+      <button class="btn-cont" style="margin-top:22px;" onclick="nextScreen()">Complete My Assessment &nbsp;${svgR()}</button>
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════ RENDER MOMENTUM */
+function renderMomentum(s){
+  const statsHTML = s.showStats ? `
+    <div class="stat-cards" style="margin-bottom:20px;">
+      <div class="stat-card"><div class="stat-num">67%</div><div class="stat-lbl">Of people who complete this assessment discover a gap larger than 10 years</div><div class="stat-src">Conversly Platform, 2024</div></div>
+      <div class="stat-card"><div class="stat-num">91%</div><div class="stat-lbl">Of users who practice daily for 90 days report meaningful increases in their Communication Age</div><div class="stat-src">Conversly User Research</div></div>
+      <div class="stat-card"><div class="stat-num">12 yrs</div><div class="stat-lbl">Average gap between chronological age and Communication Age across all users</div><div class="stat-src">Conversly Data, n = 50,000+</div></div>
+    </div>` : '';
+  return`<div class="card-c active" id="sc-${s.id}">
+    <div class="mom-wrap">
+      <div class="skel-overlay" style="border-radius:var(--cr);">${skelInner('momentum')}</div>
+      <div class="mom-pct">${s.pct}%</div>
+      <div class="mom-pct-lbl">Assessment Complete</div>
+      <div class="mom-rule"></div>
+      <h2 class="mom-title">${s.title}</h2>
+      <p class="mom-body">${s.body}</p>
+      ${statsHTML}
+      <div class="recip-box">
+        <div class="recip-label">${s.recipLabel}</div>
+        <div class="recip-text">${s.recipText}</div>
+      </div>
+      <div class="loss-box">
+        <div class="loss-label">⚠ The gap doesn't close on its own</div>
+        <div class="loss-text">${s.lossText}</div>
+      </div>
+      <button class="btn-cont" onclick="nextScreen()">Continue &nbsp;${svgR()}</button>
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════ RENDER CALCULATING */
+function renderCalculating(){
+  return`<div class="card-c active" id="sc-calculating">
+    <div class="calc-wrap">
+      <div class="skel-overlay" style="border-radius:var(--cr);">${skelInner('calculating')}</div>
+      <div class="calc-counter-ring">
+        <div class="calc-ring"></div>
+        <div class="calc-ring-inner"></div>
+        <div class="calc-ring-pulse"></div>
+        <div class="calc-num-display">
+          <div class="calc-num" id="calcNum">—</div>
+        </div>
+      </div>
+      <div class="calc-tag">Calculating Your Communication Age</div>
+      <h2 class="calc-title">Analyzing your patterns…</h2>
+      <p class="calc-sub">Cross-referencing your 15 responses across five communication maturity dimensions to determine your precise Communication Age.</p>
+      <div class="calc-steps">
+        <div class="calc-step active" id="cs1"><span class="step-dot"></span>Measuring conflict maturity patterns</div>
+        <div class="calc-step" id="cs2"><span class="step-dot"></span>Calibrating listening depth and presence</div>
+        <div class="calc-step" id="cs3"><span class="step-dot"></span>Scoring emotional fluency signals</div>
+        <div class="calc-step" id="cs4"><span class="step-dot"></span>Analyzing self-awareness indicators</div>
+        <div class="calc-step" id="cs5"><span class="step-dot"></span>Deriving your Communication Age</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════ PROFILE LOGIC */
+function scoreQ(qKey, valMap){
+  const val = S.answers[qKey];
+  return (valMap && val !== undefined && valMap[val] !== undefined) ? valMap[val] : 2;
+}
+
+function buildProfile(){
+  const a = S.answers;
+
+  const s_feedback   = scoreQ('q2', {defensive:0,struggle_worth:1,hear_not_change:2,welcome:3,seek_out:4});
+  const s_conflict   = scoreQ('q3', {avoid:0,go_quiet:1,when_cornered:2,direct_not_graceful:3,productive:4});
+  const s_disagree   = scoreQ('q4', {stay_silent:0,subtle_hints:1,emotional:2,clear_tense:3,precise_warm:4});
+  const s_anger      = scoreQ('q5', {shutdown:0,apologize_anyway:1,defensive:2,calm_externally:3,hold_space:4});
+  const s_listen     = scoreQ('q6', {planning_response:0,half_present:1,mostly_there:2,fully_present:3,reflect_back:4});
+  const s_interrupt  = scoreQ('q7', {often:0,regularly:1,occasionally:2,rarely:3,almost_never:4});
+  const s_wrong      = scoreQ('q8', {double_down:0,deflect:1,takes_moment:2,acknowledge:3,own_immediately:4});
+  const s_boundary   = scoreQ('q9', {nearly_impossible:0,very_difficult:1,manageable:2,usually_natural:3,entirely_natural:4});
+  const s_silence    = scoreQ('q10',{immediate_panic:0,discomfort:1,mild_discomfort:2,fairly_comfortable:3,use_strategically:4});
+  const s_room       = scoreQ('q11',{rarely:0,sometimes:1,often:2,usually:3,instinctive:4});
+  const s_compliment = scoreQ('q12',{dismiss:0,deflect:1,awkward:2,gracious:3,receive_fully:4});
+  const s_vuln       = scoreQ('q13',{almost_never:0,rarely:1,sometimes:2,often:3,freely:4});
+  const s_process    = scoreQ('q14',{react_immediately:0,sometimes_pause:1,try_pause:2,usually_pause:3,always_pause:4});
+  const s_help       = scoreQ('q15',{nearly_impossible:0,last_resort:1,difficult:2,comfortable:3,entirely_natural:4});
+
+  const total = s_feedback+s_conflict+s_disagree+s_anger+s_listen+s_interrupt+s_wrong+s_boundary+s_silence+s_room+s_compliment+s_vuln+s_process+s_help;
+  const maxTotal = 14 * 4; // 56
+
+  // Communication Age: 16–78
+  const commAge = Math.round(16 + (total / maxTotal) * 62);
+
+  // Dimension scores & ages
+  const conflict_s = s_conflict + s_disagree + s_boundary; // 0-12
+  const listening_s = s_listen + s_interrupt + s_silence;  // 0-12
+  const emotional_s = s_feedback + s_compliment + s_vuln;  // 0-12
+  const awareness_s = s_wrong + s_process + s_room;        // 0-12
+  const connection_s = s_anger + s_help;                    // 0-8
+
+  const dimAge = (s, mx) => Math.round(16 + (s/mx) * 62);
+  const conflictAge   = dimAge(conflict_s, 12);
+  const listeningAge  = dimAge(listening_s, 12);
+  const emotionalAge  = dimAge(emotional_s, 12);
+  const awarenessAge  = dimAge(awareness_s, 12);
+  const connectionAge = dimAge(connection_s, 8);
+
+  // Chronological age
+  const chrAgeMap = {under25:22, '25_34':29, '35_44':39, '45_54':49, '55plus':58};
+  const chronoAge = chrAgeMap[a.q1] || 32;
+  const gap = commAge - chronoAge;
+
+  // Archetype
+  let archName, archInsight, gapStatement, gapSub;
+
+  if(commAge >= 65){
+    archName = 'The Communication Elder';
+    archInsight = `Your responses describe someone who has done the real work — not just accumulated years, but genuinely examined their patterns, sat with discomfort, and chose growth over ego protection. The behaviors you've described are those of a rare communicator: someone who can hold space without losing themselves, receive without deflecting, and engage conflict as an act of care rather than aggression. Conversly can help you take this to its absolute ceiling.`;
+  } else if(commAge >= 52){
+    archName = 'The Seasoned Connector';
+    archInsight = `Your responses describe someone who has genuinely grown through their communication — not just theoretically, but behaviorally. You've developed real emotional range, real capacity for nuance, and real understanding of the difference between what you feel and what you choose to say. The remaining gaps are precisely the kind that yield the highest leverage: specific behavioral patterns that Conversly is built to close through deliberate, targeted practice.`;
+  } else if(commAge >= 38){
+    archName = 'The Developing Communicator';
+    archInsight = `Your responses describe someone with a genuine foundation — and significant, highly workable gaps. You have the self-awareness to know something isn't fully right, but the patterns that are keeping your Communication Age lower than your potential are deeply ingrained ones, formed early and rarely challenged. The good news: these exact patterns respond rapidly to targeted, consistent practice. Conversly was built precisely for this moment.`;
+  } else if(commAge >= 26){
+    archName = 'The Emerging Voice';
+    archInsight = `Your responses describe someone at a genuinely critical inflection point. Your communication patterns are shaped more by early programming than by conscious choice — and that's the most important thing to understand about where you are. You're not behind. You're at the exact moment where the right practice produces the most dramatic change. The communicator you want to become is available to you — it just requires deliberate repetition of the right patterns.`;
+  } else {
+    archName = 'The Waking Communicator';
+    archInsight = `Your responses describe someone in the earliest stages of communication self-awareness — which is exactly the right place to start. Most people spend their entire lives operating on patterns they've never examined. The fact that you took this assessment means something important: you're ready to begin. Conversly can meet you exactly where you are and build from the ground up with precision, privacy, and zero judgment.`;
+  }
+
+  if(gap >= 12){
+    gapStatement = `You communicate <span class="gap-em">${gap} years ahead</span> of your age.`;
+    gapSub = `Your communication patterns reflect a maturity level that significantly outpaces where most people your age are operating. This is a real, measurable edge — and Conversly can help you extend it further.`;
+  } else if(gap >= 5){
+    gapStatement = `You communicate <span class="gap-em">${gap} years ahead</span> of your age.`;
+    gapSub = `Your communication patterns run ahead of your chronological age in meaningful ways. With targeted practice, the gap between your current Communication Age and your true potential can close significantly.`;
+  } else if(gap >= -4){
+    gapStatement = `Your Communication Age is <span class="gap-hl">in sync</span> with your years.`;
+    gapSub = `Your communication patterns closely mirror your chronological age. This means your growth has been steady — and that the specific patterns Conversly targets can produce outsized gains from here.`;
+  } else if(gap >= -11){
+    gapStatement = `Your Communication Age runs <span class="gap-hl">${Math.abs(gap)} years behind</span> your years.`;
+    gapSub = `Your communication patterns reflect a maturity level below your chronological age. This is one of the most common gaps we see — and one of the most closeable. With consistent, deliberate practice, this gap can shrink significantly within 90 days.`;
+  } else {
+    gapStatement = `Your Communication Age runs <span class="gap-hl">${Math.abs(gap)} years behind</span> your years.`;
+    gapSub = `There's a significant gap between your chronological age and the maturity of your communication patterns. This gap isn't permanent — it's behavioral. And behavioral patterns change through practice. Conversly is built precisely to close this.`;
+  }
+
+  return { commAge, chronoAge, gap, archName, archInsight, gapStatement, gapSub,
+    dims: [
+      {name:'Conflict Maturity',    age:conflictAge,   pct:conflict_s/12},
+      {name:'Listening Depth',      age:listeningAge,  pct:listening_s/12},
+      {name:'Emotional Fluency',    age:emotionalAge,  pct:emotional_s/12},
+      {name:'Self-Awareness',       age:awarenessAge,  pct:awareness_s/12},
+      {name:'Connection Openness',  age:connectionAge, pct:connection_s/8},
+    ]};
+}
+
+/* ══════════════════════════════════ RENDER RESULTS */
+function renderResults(){
+  const p = buildProfile();
+  const dimBars = p.dims.map(d=>{
+    const pctPos = ((d.age - 16) / 62) * 100;
+    const maturity = d.pct;
+    let fillColor, markerColor;
+    if(maturity >= 0.66){ fillColor='linear-gradient(90deg,#054F30,#10B981,#34D399)'; markerColor='#34D399'; }
+    else if(maturity >= 0.33){ fillColor='linear-gradient(90deg,#854D0E,#D97706,#F5C518)'; markerColor='#F5C518'; }
+    else { fillColor='linear-gradient(90deg,#7F1D1D,#DC2626,#F87171)'; markerColor='#F87171'; }
+    return`<div class="dim-row">
+      <div class="dim-header">
+        <span class="dim-name">${d.name}</span>
+        <span class="dim-age-badge">${d.age}</span>
+      </div>
+      <div class="dim-timeline">
+        <div class="dim-track-fill" data-pct="${pctPos}" style="width:0%;background:${fillColor};height:6px;border-radius:99px;"></div>
+        <div class="dim-marker" data-pct="${pctPos}" style="left:0%;background:${markerColor};box-shadow:0 0 8px ${markerColor};"></div>
+      </div>
+      <div class="dim-axis">
+        <span class="dim-axis-lbl">16</span>
+        <span class="dim-axis-lbl" style="color:var(--txt3);font-size:9px;">Communication Age</span>
+        <span class="dim-axis-lbl">78</span>
+      </div>
+    </div>`;}).join('');
+
+  const gapAbs = Math.abs(p.gap);
+  const growthPotential = Math.max(8, Math.round((78 - p.commAge) * 0.44));
+
+  return`<div class="card-c active" id="sc-results">
+    <div class="res-wrap">
+      <!-- AGE REVEAL -->
+      <div class="age-reveal-panel">
+        <div class="skel-overlay" style="border-radius:var(--cr);">${skelInner('results')}</div>
+        <div class="age-eyebrow"><span class="q-dot"></span>Your Communication Age</div>
+        <div class="age-number" id="commAgeNum">0</div>
+        <div class="age-label">Communication Age Score</div>
+
+        <div class="age-compare">
+          <div class="age-cmp-item">
+            <div class="age-cmp-num chrono">${p.chronoAge}</div>
+            <div class="age-cmp-lbl">Chronological</div>
+          </div>
+          <div class="age-cmp-div"></div>
+          <div class="age-cmp-arrow">${p.gap >= 0 ? '→' : '←'}</div>
+          <div class="age-cmp-div"></div>
+          <div class="age-cmp-item">
+            <div class="age-cmp-num comm">${p.commAge}</div>
+            <div class="age-cmp-lbl">Communication</div>
+          </div>
+        </div>
+
+        <h3 class="age-gap-statement">${p.gapStatement}</h3>
+        <p class="age-gap-sub">${p.gapSub}</p>
+      </div>
+
+      <!-- ARCHETYPE -->
+      <div class="archetype-panel">
+        <div class="arch-eyebrow"><span class="q-dot"></span>Your Communication Archetype</div>
+        <div class="arch-name">${p.archName}</div>
+        <p class="arch-insight">${p.archInsight}</p>
+      </div>
+
+      <!-- DIMENSIONS -->
+      <div class="dims-panel">
+        <div class="dims-title-row">
+          <div class="dims-title">Communication Age by Dimension</div>
+          <div class="dims-legend">
+            <div class="dims-leg"><div class="dims-leg-dot" style="background:#34D399;"></div>Mature</div>
+            <div class="dims-leg"><div class="dims-leg-dot" style="background:#F5C518;"></div>Developing</div>
+            <div class="dims-leg"><div class="dims-leg-dot" style="background:#F87171;"></div>Growing</div>
+          </div>
+        </div>
+        ${dimBars}
+      </div>
+
+      <!-- PLANS -->
+      <div class="dims-panel" style="padding:30px 36px;">
+        <div class="arch-eyebrow" style="margin-bottom:6px;"><span class="q-dot"></span>Close the Gap</div>
+        <div class="arch-name" style="font-size:24px;margin-bottom:6px;">Start Raising Your Communication Age</div>
+        <p style="font-size:13px;color:var(--txt2);font-weight:300;margin-bottom:22px;line-height:1.64;">Both plans include a coaching curriculum calibrated to your exact Communication Age and dimension gaps.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="background:rgba(255,255,255,.018);border:1px solid var(--border2);border-radius:18px;padding:22px 20px;cursor:pointer;" onclick="openPlanModal('Starter','$12.99')">
+            <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--txt);margin-bottom:4px;">Starter</div>
+            <div style="font-size:11px;color:var(--txt3);margin-bottom:12px;">Build the foundation.</div>
+            <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:16px;"><span style="font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--txt);">$12.99</span><span style="font-size:12px;color:var(--txt3);">/mo</span></div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:18px;">
+              <li style="font-size:11.5px;color:var(--txt2);line-height:1.44;display:flex;align-items:flex-start;gap:6px;font-weight:300;"><span style="width:5px;height:5px;border-radius:50%;background:var(--em-pale);flex-shrink:0;margin-top:5px;display:block;"></span>15 min/day AI voice practice</li>
+              <li style="font-size:11.5px;color:var(--txt2);line-height:1.44;display:flex;align-items:flex-start;gap:6px;font-weight:300;"><span style="width:5px;height:5px;border-radius:50%;background:var(--em-pale);flex-shrink:0;margin-top:5px;display:block;"></span>Core roleplay scenarios</li>
+              <li style="font-size:11.5px;color:var(--txt2);line-height:1.44;display:flex;align-items:flex-start;gap:6px;font-weight:300;"><span style="width:5px;height:5px;border-radius:50%;background:var(--em-pale);flex-shrink:0;margin-top:5px;display:block;"></span>Session feedback & analytics</li>
+            </ul>
+            <button style="width:100%;border:1px solid var(--border);background:rgba(255,255,255,.07);border-radius:99px;padding:12px;font-size:13px;font-weight:600;color:var(--txt);cursor:pointer;font-family:'DM Sans',sans-serif;">Get Started →</button>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(5,79,48,0.10) 0%,rgba(5,20,11,0.82) 100%);border:1px solid rgba(52,211,153,0.26);border-radius:18px;padding:22px 20px;cursor:pointer;position:relative;" onclick="openPlanModal('Pro','$17.99')">
+            <div style="position:absolute;top:0;left:0;right:0;height:1px;border-radius:18px 18px 0 0;background:linear-gradient(90deg,transparent,rgba(52,211,153,0.65),transparent);"></div>
+            <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(16,185,129,.14);border:1px solid rgba(52,211,153,.28);border-radius:99px;padding:3px 10px;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--em-bright);margin-bottom:10px;">✦ Most Picked</div>
+            <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--txt);margin-bottom:4px;">Pro</div>
+            <div style="font-size:11px;color:var(--txt3);margin-bottom:12px;">Your full communication gym.</div>
+            <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:16px;"><span style="font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--txt);">$17.99</span><span style="font-size:12px;color:var(--txt3);">/mo</span></div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:18px;">
+              <li style="font-size:11.5px;color:var(--txt2);line-height:1.44;display:flex;align-items:flex-start;gap:6px;font-weight:300;"><span style="width:5px;height:5px;border-radius:50%;background:var(--em-pale);flex-shrink:0;margin-top:5px;display:block;"></span>Everything in Starter</li>
+              <li style="font-size:11.5px;color:var(--txt2);line-height:1.44;display:flex;align-items:flex-start;gap:6px;font-weight:300;"><span style="width:5px;height:5px;border-radius:50%;background:var(--em-pale);flex-shrink:0;margin-top:5px;display:block;"></span>30 min/day + live adaptive coaching</li>
+              <li style="font-size:11.5px;color:var(--txt2);line-height:1.44;display:flex;align-items:flex-start;gap:6px;font-weight:300;"><span style="width:5px;height:5px;border-radius:50%;background:var(--em-pale);flex-shrink:0;margin-top:5px;display:block;"></span>All 7 communication dimensions</li>
+              <li style="font-size:11.5px;color:var(--txt2);line-height:1.44;display:flex;align-items:flex-start;gap:6px;font-weight:300;"><span style="width:5px;height:5px;border-radius:50%;background:var(--em-pale);flex-shrink:0;margin-top:5px;display:block;"></span>Full history + exportable reports</li>
+            </ul>
+            <button style="width:100%;border:none;border-radius:99px;padding:12px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#054F30,#10B981,#34D399);box-shadow:0 4px 20px rgba(16,185,129,.36);">Start Training →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOWNLOAD CTA -->
+      <div class="dl-panel">
+        <div class="dl-top">
+          <div class="dl-text">
+            <h3>Your age is calculated. Now close the gap.</h3>
+            <p>Users who download within 10 minutes are <strong>5× more likely</strong> to build a lasting practice. Your Communication Age profile is waiting inside the app.</p>
+          </div>
+          <div class="dl-urgency">
+            <div class="dl-urgency-lbl">Age Growth Potential</div>
+            <div class="dl-urgency-val">+${growthPotential} yrs</div>
+          </div>
+        </div>
+        <div class="store-row">
+          <a class="store-btn apple-btn" href="https://apps.apple.com/app/conversly-communication-gym/id6753739129" target="_blank" rel="noopener">
+            <div class="s-icon"><svg width="26" height="32" viewBox="0 0 26 32" fill="none"><path d="M21.7 17.3c-.034-3.84 3.145-5.697 3.291-5.786-1.796-2.622-4.586-2.983-5.574-3.022-2.358-.24-4.61 1.393-5.808 1.393-1.198 0-3.034-1.361-4.994-1.323-2.562.04-4.935 1.497-6.249 3.775-2.661 4.609-.689 11.43 1.915 15.176 1.265 1.83 2.765 3.886 4.741 3.814 1.909-.077 2.629-1.226 4.941-1.226 2.311 0 2.96 1.226 4.98 1.188 2.056-.039 3.354-1.868 4.597-3.704 1.457-2.118 2.057-4.171 2.088-4.278-.044-.02-4-1.537-4.034-6.007zM17.925 5.405c1.047-1.283 1.758-3.055 1.566-4.825-1.514.062-3.347 1.012-4.43 2.29-.972 1.124-1.824 2.927-1.595 4.659 1.69.132 3.41-.86 4.459-2.124z" fill="white"/></svg></div>
+            <div><div class="s-sub">Download on the</div><div class="s-name">App Store</div></div>
+          </a>
+          <a class="store-btn play-btn" href="https://play.google.com/store/apps/details?id=com.conversly.app" target="_blank" rel="noopener">
+            <div class="s-icon"><svg width="26" height="29" viewBox="0 0 26 29" fill="none"><path d="M.5.72C.18 1.06 0 1.59 0 2.28v24.44c0 .69.18 1.22.5 1.56l.08.08L14.06 14.5v-.35L.58.64.5.72z" fill="url(#gp1r)"/><path d="M18.67 19.18l-4.61-4.68v-.35l4.61-4.68.1.06 5.46 3.11c1.56.89 1.56 2.34 0 3.23l-5.46 3.11-.1.06z" fill="url(#gp2r)"/><path d="M18.77 19.12L14.06 14.5.5 28.28c.51.55 1.36.62 2.33.07l15.94-9.23z" fill="url(#gp3r)"/><path d="M18.77 9.88L2.83.65C1.86.1 1.01.17.5.72L14.06 14.5l4.71-4.62z" fill="url(#gp4r)"/><defs><linearGradient id="gp1r" x1="12.85" y1="1.75" x2="-6.1" y2="14.42" gradientUnits="userSpaceOnUse"><stop stop-color="#00A0FF"/><stop offset="1" stop-color="#00E3FF"/></linearGradient><linearGradient id="gp2r" x1="25.08" y1="14.17" x2="-.51" y2="14.17" gradientUnits="userSpaceOnUse"><stop stop-color="#FFE000"/><stop offset="1" stop-color="#FF9C00"/></linearGradient><linearGradient id="gp3r" x1="16.24" y1="16.68" x2="-8.03" y2="45.75" gradientUnits="userSpaceOnUse"><stop stop-color="#FF3A44"/><stop offset="1" stop-color="#C31162"/></linearGradient><linearGradient id="gp4r" x1="-2.54" y1="-10.6" x2="8.48" y2="5.54" gradientUnits="userSpaceOnUse"><stop stop-color="#32A071"/><stop offset="1" stop-color="#00F076"/></linearGradient></defs></svg></div>
+            <div><div class="s-sub">Get it on</div><div class="s-name">Google Play</div></div>
+          </a>
+        </div>
+        <p class="dl-fine">Free to start · No credit card · Your Communication Age syncs on first launch</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════ DISPATCH */
+function renderScreen(s){
+  switch(s.type){
+    case 'welcome':    return renderWelcome();
+    case 'q':          return renderQ(s);
+    case 'insight1':   return renderInsight1();
+    case 'insight2':   return renderInsight2();
+    case 'momentum':   return renderMomentum(s);
+    case 'calculating':return renderCalculating();
+    case 'results':    return renderResults();
+  }
+}
+
+/* ══════════════════════════════════ MOUNT */
+function mount(idx, dir){
+  const el = document.getElementById('screens');
+  const spacer = document.getElementById('screensSpacer');
+  const s = SCREENS[idx];
+  const tmp = document.createElement('div');
+  tmp.innerHTML = renderScreen(s);
+  const newEl = tmp.firstElementChild;
+  const isCenter = newEl.classList.contains('card-c');
+  if(isCenter){ newEl.classList.remove('active'); newEl.classList.add('gone'); }
+  else { newEl.classList.remove('active'); newEl.classList.add(dir==='fwd'?'in-r':'in-l'); }
+  el.insertBefore(newEl, spacer);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    newEl.classList.remove('in-r','in-l','gone');
+    newEl.classList.add('active');
+    postMount(s);
+    updateSpacerHeight();
+  }));
+  el.querySelectorAll(':scope > *').forEach(child=>{
+    if(child===newEl||child===spacer) return;
+    child.classList.remove('active');
+    if(child.classList.contains('card-c')){ child.classList.add('gone'); }
+    else { child.classList.add(dir==='fwd'?'out-l':'out-r'); }
+    setTimeout(()=>child.remove(), 480);
+  });
+  updateHUD(idx);
+  restore(s);
+}
+
+function updateSpacerHeight(){
+  const spacer = document.getElementById('screensSpacer');
+  const screens = document.getElementById('screens');
+  const active = screens.querySelector('.card.active, .card-c.active');
+  if(active&&spacer) spacer.style.height = active.offsetHeight+'px';
+  requestAnimationFrame(()=>{
+    const a2 = screens.querySelector('.card.active, .card-c.active');
+    if(a2&&spacer) spacer.style.height = a2.offsetHeight+'px';
+  });
+}
+
+function updateHUD(idx){
+  const p = pct(idx);
+  document.getElementById('progFill').style.width = p+'%';
+  document.getElementById('qCounter').textContent = qLabel(idx);
+  document.querySelectorAll('.prog-ms').forEach(el=>{
+    el.classList.toggle('passed', p >= parseInt(el.dataset.at));
+  });
+}
+
+function restore(s){
+  if(s.type==='q' && S.answers[s.id]){
+    const o = document.querySelector(`[data-val="${S.answers[s.id]}"]`);
+    if(o){ o.classList.add('sel'); document.getElementById('btn-'+s.id)?.classList.add('on'); }
+  }
+}
+
+function postMount(s){
+  if(s.type==='insight1'||s.type==='insight2'){
+    setTimeout(()=>{ document.querySelectorAll('.bar-fill').forEach(b=>{ b.style.width=b.dataset.pct+'%'; }); }, 200);
+  }
+  if(s.type==='calculating') animateCalc();
+  if(s.type==='results'){ setTimeout(animateResults, 300); spawnConfetti(); }
+  if(s.type==='q' && s.milestone){
+    setTimeout(()=>{
+      const mb = document.getElementById('mb-'+s.id);
+      if(mb) mb.classList.add('show');
+    }, 400);
+  }
+}
+
+/* ══════════════════════════════════ INTERACTIONS */
+function selectOpt(btn, sid){
+  btn.closest('.opts').querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  btn.classList.add('sel');
+  S.answers[sid] = btn.dataset.val;
+  document.getElementById('btn-'+sid)?.classList.add('on');
+  setTimeout(()=>{ if(document.getElementById('btn-'+sid)?.classList.contains('on')) nextScreen(); }, 360);
+}
+function nextScreen(){ if(S.screen<SCREENS.length-1){ S.screen++; mount(S.screen,'fwd'); } }
+function prevScreen(){ if(S.screen>0){ S.screen--; mount(S.screen,'bwd'); } }
+
+/* ══════════════════════════════════ MODAL */
+function openPlanModal(planName, price){
+  document.getElementById('modalPlanName').textContent = planName;
+  document.getElementById('modalPlanPrice').textContent = price+' / month';
+  document.getElementById('modalIcon').textContent = planName==='Pro' ? '🌿' : '🌱';
+  document.getElementById('planModal').classList.add('active');
+}
+function closePlanModal(e){
+  if(!e||e.target===document.getElementById('planModal')){
+    document.getElementById('planModal').classList.remove('active');
+  }
+}
+
+/* ══════════════════════════════════ CALC ANIM */
+function animateCalc(){
+  const ids = ['cs1','cs2','cs3','cs4','cs5'];
+  let i = 0;
+  // Animate counter during calc steps
+  let counterVal = 0;
+  const counterEl = document.getElementById('calcNum');
+  const targetAge = buildProfile().commAge;
+  const counterInterval = setInterval(()=>{
+    counterVal = Math.min(counterVal + Math.ceil(Math.random()*8)+1, 99);
+    if(counterEl) counterEl.textContent = counterVal;
+    if(counterVal >= 99) clearInterval(counterInterval);
+  }, 60);
+
+  const tick = ()=>{
+    if(i>0){ const p=document.getElementById(ids[i-1]); if(p){ p.classList.remove('active'); p.classList.add('done'); } }
+    if(i<ids.length){
+      const c=document.getElementById(ids[i]); if(c) c.classList.add('active');
+      i++; setTimeout(tick, 720);
+    } else {
+      clearInterval(counterInterval);
+      if(counterEl) counterEl.textContent = targetAge;
+      setTimeout(()=>nextScreen(), 500);
+    }
+  };
+  setTimeout(tick, 460);
+}
+
+/* ══════════════════════════════════ RESULTS ANIM */
+function animateResults(){
+  const p = buildProfile();
+
+  // Animate the big age number counting up
+  const numEl = document.getElementById('commAgeNum');
+  if(numEl){
+    let current = 0;
+    const target = p.commAge;
+    const duration = 1800;
+    const step = (target / duration) * 16;
+    const interval = setInterval(()=>{
+      current = Math.min(current + step, target);
+      numEl.textContent = Math.round(current);
+      if(current >= target){
+        numEl.textContent = target;
+        clearInterval(interval);
+      }
+    }, 16);
+  }
+
+  // Animate dimension timeline bars and markers
+  setTimeout(()=>{
+    document.querySelectorAll('.dim-track-fill').forEach(el=>{
+      const pct = parseFloat(el.dataset.pct);
+      el.style.width = pct+'%';
+    });
+    document.querySelectorAll('.dim-marker').forEach(el=>{
+      const pct = parseFloat(el.dataset.pct);
+      el.style.left = pct+'%';
+    });
+  }, 400);
+}
+
+/* ══════════════════════════════════ CONFETTI */
+function spawnConfetti(){
+  const field = document.getElementById('confetti');
+  const colors = ['#10B981','#34D399','#6EE7B7','#064E3B','rgba(255,255,255,0.72)','#F5C518','#A7F3D0'];
+  for(let i=0;i<60;i++){
+    setTimeout(()=>{
+      const el = document.createElement('div');
+      el.className = 'cp';
+      const size = 4 + Math.random()*7;
+      el.style.cssText = `left:${Math.random()*100}%;top:-10px;width:${size}px;height:${size}px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        animation-duration:${2.4+Math.random()*2.2}s;animation-delay:${Math.random()*0.7}s;
+        border-radius:${Math.random()>.5?'50%':'3px'};`;
+      field.appendChild(el);
+      setTimeout(()=>el.remove(), 6000);
+    }, i*45);
+  }
+}
+
+/* ══════════════════════════════════ RESIZE */
+window.addEventListener('resize', updateSpacerHeight);
+
+/* ══════════════════════════════════ BOOT */
+mount(0, 'fwd');
+</script>
+</body>
+</html>
